@@ -1,0 +1,22 @@
+# Virtual environment
+myenv/
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment
+.env
+
+# Model artifacts
+best_model.pkl
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
