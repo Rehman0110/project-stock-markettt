@@ -186,19 +186,25 @@ if btn_load or "df" not in st.session_state:
         with st.spinner(f"Fetching data for **{ticker}**..."):
             try:
                 df = load_data(ticker, start=str(start_date), end=str(end_date), convert_to_inr=convert_to_inr)
-                info = get_stock_info(ticker)
-                st.session_state["df"] = df
-                st.session_state["ticker"] = ticker
-                st.session_state["info"] = info
-                st.session_state["start_date"] = str(start_date)
-                st.session_state["end_date"] = str(end_date)
-                st.toast(f"✅ Loaded {len(df)} rows for {ticker}", icon="📥")
+                if df.empty:
+                    st.warning("No data returned for the selected ticker and date range. Please check the ticker symbol or adjust the date range.")
+                else:
+                    info = get_stock_info(ticker)
+                    st.session_state["df"] = df
+                    st.session_state["ticker"] = ticker
+                    st.session_state["info"] = info
+                    st.session_state["start_date"] = str(start_date)
+                    st.session_state["end_date"] = str(end_date)
+                    st.toast(f"✅ Loaded {len(df)} rows for {ticker}", icon="📥")
             except Exception as e:
                 st.error(f"Failed to load data: {e}")
 
 # ─── Main Content ───────────────────────────────────────────────────────────
 if "df" in st.session_state:
     df = st.session_state["df"]
+    if df.empty:
+        st.warning("No data available for the selected ticker and date range. Please adjust your inputs.")
+        st.stop()
     ticker_display = st.session_state.get("ticker", ticker)
     info = st.session_state.get("info", {})
     currency_symbol = st.session_state.get("currency_symbol", "₹")
